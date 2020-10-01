@@ -1,0 +1,55 @@
+{% extends 'base.html' %}
+
+{% block header %}
+    <nav class="navbar navbar-light bg-light">
+        <a class="navbar-brand" href="#">Канбала</a>
+        <div class="text-right p-3">
+            <p>{{ user.username }}</p>
+            <a href="#">Мой профиль</a>
+            <a href="{{ url_for('auth.logout') }}">Выйти</a>
+        </div>
+    </nav>
+{% endblock %}
+
+{% block content %}
+    <div class="container-fluid">
+        <div class="row" style="height: 100vh">
+            <section class="col-sm-2" style="background: antiquewhite">
+                <a class="btn btn-primary m-3 text-light">Создать новый регламент</a>
+                <p>Мои регламенты:</p>
+                <ol>
+                    <li>
+                        <a href="#">Выдача субсидий МСП</a>
+                        <ul>
+                            <li><a href="#">Версия 1</a></li>
+                            <li><a href="#">Версия 2</a> <span class="badge badge-success">согл</span></li>
+                            <li><a href="#">Версия 3</a></li>
+                            <li><a href="#">Версия 4</a> <span class="badge badge-primary">в процессе</span></li>
+                        </ul>
+                    </li>
+                    <li>
+                        <a href="#">Выдача субсидий КФХ</a>
+                        <ul>
+                            <li><a href="#">Версия 1</a></li>
+                            <li><a href="#">Версия 2</a></li>
+                            <li><a href="#">Версия 3</a> <span class="badge badge-success">согл</span></li>
+                        </ul>
+                    </li>
+                    <li>
+                        <a href="#">Прививки</a>
+                        <ul>
+                            <li><a href="#">Версия 1</a></li>
+                            <li><a href="#">Версия 2</a></li>
+                            <li><a href="#">Версия 3</a> <span class="badge badge-success">согл</span></li>
+                        </ul>
+                    </li>
+                    <li><a href="#">...</a></li>
+
+                </ol>
+            </section>
+            <section class="col-sm-10" style="background: lightblue">
+                рабочая область
+            </section>
+        </div>
+    </div>
+{% endblock %}
