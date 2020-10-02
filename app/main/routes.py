@@ -28,6 +28,7 @@ def regulation_create():
     regulation_version = RegulationVersion()
     regulation_version.version_number = 1
     regulation_version.status = 'Черновик'
+    regulation_version.data = json.dumps({})
     regulation_version.regulation_id = regulation.id
     db.session.add(regulation_version)
     db.session.commit()
@@ -53,4 +54,16 @@ def regulation_save(regulation_version_id):
     regulation_version.data = data
     regulation_version.parent_regulation().base_document = data['header_base_doc']
     db.session.commit()
+    return redirect(request.referrer)
+
+
+@bp.route('/editor_add_chapter_<regulation_version_id>', methods=['GET', 'POST'])
+@login_required
+def editor_add_chapter(regulation_version_id):
+    regulation_version: RegulationVersion = RegulationVersion.query.get(regulation_version_id)
+    data = regulation_version.data
+    if 'main_text' in data:
+        print('добавляем')
+    else:
+        print('создаем')
     return redirect(request.referrer)
