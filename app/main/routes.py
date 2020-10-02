@@ -51,5 +51,6 @@ def regulation_save(regulation_version_id):
     data = json.loads(json.dumps(request.form))
     regulation_version: RegulationVersion = RegulationVersion.query.get(regulation_version_id)
     regulation_version.data = data
+    regulation_version.parent_regulation().base_document = data['header_base_doc']
     db.session.commit()
     return redirect(request.referrer)
