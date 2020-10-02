@@ -52,7 +52,7 @@ class Regulation(db.Model):
     id = db.Column(db.Integer, primary_key=True, autoincrement=True)
     short_name = db.Column(db.String(512))
     description = db.Column(db.String(2048))
-
+    created = db.Column(db.DateTime, default=datetime.now())
 
 class RegulationVersion(db.Model):
     id = db.Column(db.Integer, primary_key=True, autoincrement=True)
@@ -60,6 +60,7 @@ class RegulationVersion(db.Model):
     version_number = db.Column(db.Integer)
     status = db.Column(db.String(20))
     data = db.Column(db.JSON)
+    created = db.Column(db.DateTime, default=datetime.now())
 
     def parent_regulation(self):
         return Regulation.query.get(self.regulation_id)

@@ -1,0 +1,14 @@
+{% extends 'base.html' %}
+
+{% block content %}
+    <span>Регламент: {{ regulation_version.parent_regulation().short_name }}</span>
+    <a href="#">Переименовать</a>
+    <p>Версия {{ regulation_version.version_number }}</p>
+    <p>Дата создания {{ regulation_version.created }}</p>
+    <p>Статус <em>{{ regulation_version.status }}</em></p>
+    Илья, тут твой html
+{% endblock %}
+
+{% block scripts %}
+    Илья, тут твой js
+{% endblock %}

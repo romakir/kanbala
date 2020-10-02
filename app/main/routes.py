@@ -1,8 +1,9 @@
+from app import db
 from app.main import bp
-from flask import render_template, request, redirect, url_for, make_response
+from flask import render_template, redirect, url_for
 from flask_login import current_user, login_required
-from app import Config, mail, db
-from app.models import User
+from app.models import Regulation, RegulationVersion
+
 
 
 @bp.route('/', methods=['GET','POST'])
@@ -10,3 +11,28 @@ from app.models import User
 def index():
     title = 'КАНБАЛА'
     return render_template('main/index.html', title=title, user=current_user)
+
+
+@bp.route('/create_regulation', methods=['GET', 'POST'])
+@login_required
+def regulation_create():
+    regulation = Regulation()
+    db.session.add(regulation)
+    db.session.commit()
+    regulation.short_name = f'Новый регламент {regulation.id}'
+    regulation_version = RegulationVersion()
+    regulation_version.version_number = 1
+    regulation_version.status = 'Черновик'
+    regulation_version.regulation_id = regulation.id
+    db.session.add(regulation_version)
+    db.session.commit()
+    return redirect(url_for('main.regulation_show', regulation_version_id=regulation_version.id))
+
+
+@bp.route('/show_regulation_<regulation_version_id>', methods=['GET', 'POST'])
+@login_required
+def regulation_show(regulation_version_id):
+    regulation_version: RegulationVersion = RegulationVersion.query.get(regulation_version_id)
+    return render_template('main/regulation_editor.html',
+                           title='Редактор регламента',
+                           regulation_version=regulation_version)
