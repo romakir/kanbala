@@ -1,8 +1,9 @@
 from app import db
 from app.main import bp
-from flask import render_template, redirect, url_for
+from flask import render_template, redirect, url_for, request
 from flask_login import current_user, login_required
 from app.models import Regulation, RegulationVersion
+import json
 
 
 @bp.route('/', methods=['GET','POST'])
@@ -37,6 +38,15 @@ def regulation_create():
 @login_required
 def regulation_show(regulation_version_id):
     regulation_version: RegulationVersion = RegulationVersion.query.get(regulation_version_id)
+    # todo научиться подгружать данные с версии
     return render_template('main/regulation_editor.html',
                            title='Редактор регламента',
                            regulation_version=regulation_version)
+
+
+@bp.route('/save_regulation_<regulation_version_id>', methods=['POST'])
+@login_required
+def regulation_save(regulation_version_id):
+    data = json.loads(json.dumps(request.form))
+    print(data)
+    return redirect(request.referrer)

@@ -1,37 +1,37 @@
 {% extends 'base.html' %}
 
 {% block content %}
-<span>Регламент: {{ regulation_version.parent_regulation().short_name }}</span>
-<a href="#">Переименовать</a>
-<p>Версия {{ regulation_version.version_number }}</p>
-<p>Дата создания {{ regulation_version.created }}</p>
-<p>Статус <em>{{ regulation_version.status }}</em></p>
-<form method="POST" action='/' id='editor'>
-    <div id='headers'>
-        <div id='hdrs'>
-            <label for='header_1'>Отметка о приложении</label>
-            <input name='header_1' id='header_1' type="text">
-            <label for='header_2'>Наименование приложения</label>
-            <textarea name='header_2'  id='header_2'></textarea>
-        </div>
-    </div>
-    <div>
-        <!-- section title -->
-        <div class="d-inline">
-            <label for='sect_1'>1. </label>
-            <input id='sect_1' name='sect_1' type='text'>
-        </div>
-
-        <!-- paragraph -->
-        <div id='paragraphs-1'>
-            <button type="button" onclick="event.preventDefault(); new_paragraph(1);">Новый пункт</button>
-            <div>
-                1.1<textarea text='paragraph_1_1'></textarea>
+    <span>Регламент: {{ regulation_version.parent_regulation().short_name }}</span>
+    <a href="#">Переименовать</a>
+    <p>Версия {{ regulation_version.version_number }}</p>
+    <p>Дата создания {{ regulation_version.created }}</p>
+    <p>Статус <em>{{ regulation_version.status }}</em></p>
+    <form method="POST" action='/save_regulation_{{ regulation_version.id }}' id='editor'>
+        <div id='headers'>
+            <div id='hdrs'>
+                <label for='header_1'>Отметка о приложении</label>
+                <input name='header_1' id='header_1' type="text">
+                <label for='header_2'>Наименование приложения</label>
+                <textarea name='header_2'  id='header_2'></textarea>
             </div>
         </div>
-    </div>
+        <div>
+            <!-- section title -->
+            <div class="d-inline">
+                <label for='sect_1'>1. </label>
+                <input id='sect_1' name='sect_1' type='text'>
+            </div>
 
-</form>
+            <!-- paragraph -->
+            <div id='paragraphs-1'>
+                <button type="button" onclick="event.preventDefault(); new_paragraph(1);">Новый пункт</button>
+                <div>
+                    1.1<textarea text='paragraph_1_1'></textarea>
+                </div>
+            </div>
+        </div>
+    </form>
+    <button form="editor" type="submit">Сохранить</button>
 <button onclick="event.preventDefault(); new_section()">Новый раздел</button>
 {% endblock %}
 
