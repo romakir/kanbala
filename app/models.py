@@ -78,3 +78,5 @@ class UserRegulation(db.Model):
     regulation_version_id = db.Column(db.Integer, db.ForeignKey('regulation_version.id'))
     mode = db.Column(db.String(20))
     comments_data = db.Column(db.JSON)
+
+

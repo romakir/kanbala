@@ -1,13 +1,15 @@
 {% extends 'base.html' %}
 
 {% block header %}
-    <nav class="navbar navbar-light bg-light">
-        <a class="navbar-brand" href="#">Канбала</a>
-        <div class="text-right p-3">
-            <a href="#">Мой профиль</a>
-            <a href="{{ url_for('auth.logout') }}">Выйти</a>
-        </div>
-    </nav>
+
+        <nav class="navbar navbar-light bg-d mb-3">
+            <a class="navbar-brand" href="#">Канбала</a>
+            <div class="text-right p-3">
+                <a href="#">Мой профиль</a>
+                <a href="{{ url_for('auth.logout') }}">Выйти</a>
+            </div>
+        </nav>
+
 {% endblock %}
 
 {% block content %}
@@ -19,18 +21,20 @@
                     <p class="text-center font-weight-bolder m-0">{{ user.username }}</p>
                     <p class="m-0 text-center font-weight-light"><em>{{ user.organization }}</em></p>
                     <p class="mb-3 text-center font-weight-light"><em>{{ user.position }}</em></p>
-                    <p>{{ users_regulations|length }} создано регламентов</p>
-                    <p>{{ 0 }} согласовано регламентов</p>
-                    <p>{{ 0 }} регламентов на согласовании</p>
+                    <p><span class="badge badge-primary badge-pill">{{ users_regulations|length }}</span> создано регламентов</p>
+                    <p><span class="badge badge-primary badge-pill">{{ 0 }}</span> согласовано регламентов</p>
+                    <p><span class="badge badge-primary badge-pill">{{ 0 }}</span> регламентов на согласовании</p>
                 </div>
             </div>
             <div class="col-9">
-                <form class="container-fluid p-0 mt-1" method="post">
-                    <input class="form-control m-0" type="text" placeholder="Найти документ">
+                <form class="container-fluid p-0 mt-1 ml-3" method="post">
+                    <div class="row">
+                    <input class="form-control col-8" type="text" placeholder="Найти документ">
+                    <button type="submit" class="btn btn-primary mb-2 col-2 ml-2">Найти</button>
+                    </div>
                 </form>
 
-                <h5 class="mt-3">Мои регламенты</h5>
-                <a href="{{ url_for('main.regulation_create') }}" class="btn btn-primary text-light">Создать новый регламент</a>
+                <h5 class="mt-4 mb-3">Мои регламенты</h5>
                 <div class="jumbotron p-3">
                     <ol>
                         {% for regulation in users_regulations %}
@@ -46,6 +50,27 @@
                                 </ul>
                             </li>
                         {% endfor %}
+                    </ol>
+                <a href="{{ url_for('main.regulation_create') }}" class="btn btn-primary text-light mt-2">Создать новый регламент</a>
+                </div>
+
+            <h5 class="sogl mb-3">Мои регламенты</h5>
+                <div class="jumbotron p-3">
+                    <ol>
+                    {% for version in regulation.get_versions() %}
+                    {% if version.status == 'В работе' %}
+                        {% for regulation in users_regulations %}
+                            <li>
+                                {{ regulation.short_name }}
+                                <ul>
+                                        <li>
+                                            <a href="{{ url_for('main.regulation_show', regulation_version_id=version.id) }}">Версия {{ version.version_number }}</a>
+                                        </li>
+                                </ul>
+                            </li>
+                        {% endfor %}
+                    {% endif %}
+                    {% endfor %}
                     </ol>
                 </div>
             </div>
