@@ -32,66 +32,69 @@
                 <div>
                     <p><b>Основной текст</b></p>
                     <!-- section title -->
-                    <div class="d-inline">
-                        <label for='sect_1'>1. </label>
-                        <input id='sect_1' name='sect_1' type='text'>
-                    </div>
+{#                    <div class="d-inline">#}
+{#                        <label for='sect_1'>1. </label>#}
+{#                        <input id='sect_1' name='sect_1' type='text'>#}
+{#                    </div>#}
 
                     <!-- paragraph -->
-                    <div id='paragraphs-1'>
-                        <button type="button" onclick="event.preventDefault(); new_paragraph(1);">Новый пункт</button>
-                        <div>
-                            1.1<textarea text='paragraph_1_1'></textarea>
-                        </div>
-                    </div>
+{#                    <div id='paragraphs-1'>#}
+{#                        <button type="button" onclick="event.preventDefault(); new_paragraph(1);">Новый пункт</button>#}
+{#                        <div>#}
+{#                            1.1<textarea text='paragraph_1_1'></textarea>#}
+{#                        </div>#}
+{#                    </div>#}
                 </div>
+                <button class="btn btn-primary" form="editor" type="submit">Сохранить</button>
             </form>
-
         </div>
     </div>
-    <button form="editor" type="submit">Сохранить</button>
-    <button onclick="event.preventDefault(); new_section()">Новый раздел</button>
+{#    <button onclick="event.preventDefault(); new_section()">Новый раздел</button>#}
 {% endblock %}
 
 {% block scripts %}
-<script>
-    sections = { '1': 1 }
-    function new_section() {
-        sections[Object.keys(sections).length + 1] = 0
-        new_sect = document.createElement('div')
-        new_sect.classList.add('d-inline')
-
-        new_labele = document.createElement('label')
-        new_labele.setAttribute('for', 'sect_' + String(Object.keys(sections).length))
-        new_labele.innerHTML = String(Object.keys(sections).length) + ". "
-
-        new_input = document.createElement('input')
-        new_input.setAttribute('id', 'sect_' + String(Object.keys(sections).length))
-        new_input.setAttribute('name', 'sect_' + String(Object.keys(sections).length))
-        new_input.setAttribute('type', 'text')
-
-        new_subs_cont = document.createElement('div')
-        new_subs_cont.setAttribute("id", 'paragraphs-' + String(Object.keys(sections).length))
-        new_subs_cont.innerHTML = '<button type="button" onclick="event.preventDefault(); new_paragraph(' + Object.keys(sections).length + ');">Новый пункт</button>'
-
-        new_sect.appendChild(new_labele)
-        new_sect.appendChild(new_input)
-        new_sect.appendChild(new_subs_cont)
-        document.getElementById('editor').appendChild(new_sect)
-    }
-
-    function new_paragraph(section_id) {
-        sections[String(section_id)] += 1
-        new_subsect = document.createElement("div")
-        new_labele = document.createElement('label')
-        new_labele.innerHTML = String(section_id) + '.' + String(sections[String(section_id)])
-        new_inputfield = document.createElement('textarea')
-        new_inputfield.setAttribute("name", "paragraph_" + String(section_id) + "_" + String(sections[String(section_id)]))
-        new_subsect.appendChild(new_labele)
-        new_subsect.appendChild(new_inputfield)
-
-        old_sect = document.getElementById("paragraphs-" + section_id)
-        old_sect.appendChild(new_subsect)
-    }
-</script>
+    <script>
+    </script>
+{#<script>#}
+{#    sections = { '1': 1 }#}
+{##}
+{#    function new_section() {#}
+{#        sections[Object.keys(sections).length + 1] = 0#}
+{#        new_sect = document.createElement('div')#}
+{#        new_sect.classList.add('d-inline')#}
+{#        new_sect.classList.add('form-control')#}
+{##}
+{#        new_labele = document.createElement('label')#}
+{#        new_labele.setAttribute('for', 'sect_' + String(Object.keys(sections).length))#}
+{#        new_labele.innerHTML = String(Object.keys(sections).length) + ". "#}
+{##}
+{#        new_input = document.createElement('input')#}
+{#        new_input.setAttribute('id', 'sect_' + String(Object.keys(sections).length))#}
+{#        new_input.setAttribute('name', 'sect_' + String(Object.keys(sections).length))#}
+{#        new_input.setAttribute('type', 'text')#}
+{##}
+{#        new_subs_cont = document.createElement('div')#}
+{#        new_subs_cont.setAttribute("id", 'paragraphs-' + String(Object.keys(sections).length))#}
+{#        new_subs_cont.innerHTML = '<button type="button" onclick="event.preventDefault(); new_paragraph(' + Object.keys(sections).length + ');">Новый пункт</button>'#}
+{##}
+{#        new_sect.appendChild(new_labele)#}
+{#        new_sect.appendChild(new_input)#}
+{#        new_sect.appendChild(new_subs_cont)#}
+{#        document.getElementById('editor').appendChild(new_sect)#}
+{#    }#}
+{##}
+{#    function new_paragraph(section_id) {#}
+{#        sections[String(section_id)] += 1#}
+{#        new_subsect = document.createElement("div")#}
+{#        new_labele = document.createElement('label')#}
+{#        new_labele.innerHTML = String(section_id) + '.' + String(sections[String(section_id)])#}
+{#        new_inputfield = document.createElement('textarea')#}
+{#        new_inputfield.setAttribute("name", "paragraph_" + String(section_id) + "_" + String(sections[String(section_id)]))#}
+{#        new_subsect.appendChild(new_labele)#}
+{#        new_subsect.appendChild(new_inputfield)#}
+{##}
+{#        old_sect = document.getElementById("paragraphs-" + section_id)#}
+{#        old_sect.appendChild(new_subsect)#}
+{#    }#}
+{#</script>#}
 {% endblock %}
