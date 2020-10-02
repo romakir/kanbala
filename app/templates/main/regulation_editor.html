@@ -57,6 +57,9 @@
 {% block scripts %}
     <script>
         let data = {{ data|safe }}
+        if ('main_text' in data) {
+            console.log(data['main_text'])
+        }
     </script>
 {#<script>#}
 {#    sections = { '1': 1 }#}

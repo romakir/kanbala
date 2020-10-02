@@ -39,7 +39,7 @@ def regulation_create():
 @login_required
 def regulation_show(regulation_version_id):
     regulation_version: RegulationVersion = RegulationVersion.query.get(regulation_version_id)
-    data = regulation_version.data
+    data = json.loads(regulation_version.data)
     return render_template('main/regulation_editor.html',
                            title='Редактор регламента',
                            regulation_version=regulation_version,
@@ -51,7 +51,7 @@ def regulation_show(regulation_version_id):
 def regulation_save(regulation_version_id):
     data = json.loads(json.dumps(request.form))
     regulation_version: RegulationVersion = RegulationVersion.query.get(regulation_version_id)
-    regulation_version.data = data
+    regulation_version.data = json.dumps(data)
     regulation_version.parent_regulation().base_document = data['header_base_doc']
     db.session.commit()
     return redirect(request.referrer)
@@ -61,9 +61,11 @@ def regulation_save(regulation_version_id):
 @login_required
 def editor_add_chapter(regulation_version_id):
     regulation_version: RegulationVersion = RegulationVersion.query.get(regulation_version_id)
-    data = regulation_version.data
-    if 'main_text' in data:
-        print('добавляем')
+    regulation_version_data = json.loads(regulation_version.data)
+    if 'main_text' in regulation_version_data:
+        regulation_version_data['main_text'][f'chapter_{len(regulation_version_data["main_text"])+1}'] = ''
     else:
-        print('создаем')
+        regulation_version_data['main_text'] = {'chapter_1': ''}
+    regulation_version.data = json.dumps(regulation_version_data)
+    db.session.commit()
     return redirect(request.referrer)
