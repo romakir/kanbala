@@ -29,21 +29,8 @@
                         </div>
                     </div>
                 </div>
-                <div class="p-3">
+                <div class="p-3 main-text">
                     <p><b>Основной текст</b></p>
-                    <!-- section title -->
-{#                    <div class="d-inline">#}
-{#                        <label for='sect_1'>1. </label>#}
-{#                        <input id='sect_1' name='sect_1' type='text'>#}
-{#                    </div>#}
-
-                    <!-- paragraph -->
-{#                    <div id='paragraphs-1'>#}
-{#                        <button type="button" onclick="event.preventDefault(); new_paragraph(1);">Новый пункт</button>#}
-{#                        <div>#}
-{#                            1.1<textarea text='paragraph_1_1'></textarea>#}
-{#                        </div>#}
-{#                    </div>#}
                     <a href="{{ url_for('main.editor_add_chapter', regulation_version_id=regulation_version.id) }}" class="btn btn-success">Добавить раздел</a>
                 </div>
                 <button class="btn btn-primary" form="editor" type="submit">Сохранить</button>
@@ -51,56 +38,38 @@
             </form>
         </div>
     </div>
-{#    <button onclick="event.preventDefault(); new_section()">Новый раздел</button>#}
 {% endblock %}
 
 {% block scripts %}
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
     <script>
-        let data = {{ data|safe }}
-        if ('main_text' in data) {
-            console.log(data['main_text'])
+        let data = {{ data|safe }};
+        let pattern = /chapter_\d/;
+        let chapters = [];
+        for (let item in data) if (item.match(pattern)) chapters.push({'text': data[item]})
+        let index = 0;
+        for (let chapter in chapters) {
+            index++
+            let main_text_wrapper = $('.main-text')
+            let chapter_wrapper_node = $(`<div class="chapter_${index}"></div>`)
+            let chapter_header_node = $(`<p class="mb-0 mt-2">Раздел ${index}</p>`)
+            let chapter_node = $(`<textarea class="form-control" id=chapter_name_${index} name="chapter_${index}" placeholder="Заголовок раздела">${chapters[chapter]['text']}</textarea>`)
+            let add_paragraph_button = $(`<a class="btn btn-secondary ml-3" href="{{ url_for('main.add_paragraph', regulation_version_id=regulation_version.id, chapter_number='') }}${index}">Добавить пункт</a>`)
+
+            let paragraph_pattern = new RegExp('paragraph_'+(Number(chapter)+1).toString()+'_\\d')
+            let paragraphs = [];
+            for (let item in data) {
+                if (item.match(paragraph_pattern)) paragraphs.push({'text': data[item]})
+            }
+
+            chapter_wrapper_node.append(chapter_header_node, chapter_node, add_paragraph_button)
+            main_text_wrapper.append(chapter_wrapper_node)
+
+            for (let paragraph in paragraphs) {
+                let paragraph_header_node = $(`<p class="ml-3 mb-0 mt-3" id=paragraph_name_${Number(paragraph)+1}_${Number(paragraph)+1}>Пункт ${Number(chapter)+1}.${Number(paragraph)+1}</p>`)
+                let paragraph_node = $(`<textarea rows="15" class="form-control ml-3 mr-3" name=paragraph_${Number(chapter)+1}_${Number(paragraph)+1}>${paragraphs[paragraph]['text']}</textarea>`)
+                chapter_wrapper_node.append(paragraph_header_node, paragraph_node)
+            }
         }
     </script>
-{#<script>#}
-{#    sections = { '1': 1 }#}
-{##}
-{#    function new_section() {#}
-{#        sections[Object.keys(sections).length + 1] = 0#}
-{#        new_sect = document.createElement('div')#}
-{#        new_sect.classList.add('d-inline')#}
-{#        new_sect.classList.add('form-control')#}
-{##}
-{#        new_labele = document.createElement('label')#}
-{#        new_labele.setAttribute('for', 'sect_' + String(Object.keys(sections).length))#}
-{#        new_labele.innerHTML = String(Object.keys(sections).length) + ". "#}
-{##}
-{#        new_input = document.createElement('input')#}
-{#        new_input.setAttribute('id', 'sect_' + String(Object.keys(sections).length))#}
-{#        new_input.setAttribute('name', 'sect_' + String(Object.keys(sections).length))#}
-{#        new_input.setAttribute('type', 'text')#}
-{##}
-{#        new_subs_cont = document.createElement('div')#}
-{#        new_subs_cont.setAttribute("id", 'paragraphs-' + String(Object.keys(sections).length))#}
-{#        new_subs_cont.innerHTML = '<button type="button" onclick="event.preventDefault(); new_paragraph(' + Object.keys(sections).length + ');">Новый пункт</button>'#}
-{##}
-{#        new_sect.appendChild(new_labele)#}
-{#        new_sect.appendChild(new_input)#}
-{#        new_sect.appendChild(new_subs_cont)#}
-{#        document.getElementById('editor').appendChild(new_sect)#}
-{#    }#}
-{##}
-{#    function new_paragraph(section_id) {#}
-{#        sections[String(section_id)] += 1#}
-{#        new_subsect = document.createElement("div")#}
-{#        new_labele = document.createElement('label')#}
-{#        new_labele.innerHTML = String(section_id) + '.' + String(sections[String(section_id)])#}
-{#        new_inputfield = document.createElement('textarea')#}
-{#        new_inputfield.setAttribute("name", "paragraph_" + String(section_id) + "_" + String(sections[String(section_id)]))#}
-{#        new_subsect.appendChild(new_labele)#}
-{#        new_subsect.appendChild(new_inputfield)#}
-{##}
-{#        old_sect = document.getElementById("paragraphs-" + section_id)#}
-{#        old_sect.appendChild(new_subsect)#}
-{#    }#}
-{#</script>#}
 {% endblock %}
