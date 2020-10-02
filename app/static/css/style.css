@@ -1,4 +1,4 @@
-.jumbotron p{
+.size14{
     font-size: 14px !important;
 }
 
@@ -8,4 +8,20 @@
 
 .sogl{
     margin-top: 100px;
+}
+
+.size24{
+    font-size: 24px !important;
+}
+
+.menu--text{
+    color: black !important;
+}
+
+.mr-10{
+    margin-right: 10rem !important;
+}
+
+.grey-box{
+    background-color: #EEE;
 }

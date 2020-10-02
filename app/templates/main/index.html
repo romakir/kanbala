@@ -5,8 +5,8 @@
         <nav class="navbar navbar-light bg-d mb-3">
             <a class="navbar-brand" href="#">Канбала</a>
             <div class="text-right p-3">
-                <a href="#">Мой профиль</a>
-                <a href="{{ url_for('auth.logout') }}">Выйти</a>
+                <a href="#" class="mr-3 menu--text">Мой профиль</a>
+                <a class="menu--text" href="{{ url_for('auth.logout') }}">Выйти</a>
             </div>
         </nav>
 
@@ -18,12 +18,12 @@
             <div class="col-3">
                 <div class="jumbotron p-5">
                     <div class="rounded-circle text-center ml-auto mr-auto mb-2" style="background: gray; height: 100px; width: 100px"></div>
-                    <p class="text-center font-weight-bolder m-0">{{ user.username }}</p>
+                    <p class="text-center font-weight-bolder m-0 size24" >{{ user.username }}</p>
                     <p class="m-0 text-center font-weight-light"><em>{{ user.organization }}</em></p>
                     <p class="mb-3 text-center font-weight-light"><em>{{ user.position }}</em></p>
-                    <p><span class="badge badge-primary badge-pill">{{ users_regulations|length }}</span> создано регламентов</p>
-                    <p><span class="badge badge-primary badge-pill">{{ 0 }}</span> согласовано регламентов</p>
-                    <p><span class="badge badge-primary badge-pill">{{ 0 }}</span> регламентов на согласовании</p>
+                    <p class="size14"><span class="badge badge-primary badge-pill">{{ users_regulations|length }}</span> создано регламентов</p>
+                    <p class="size14"><span class="badge badge-primary badge-pill">{{ 0 }}</span> согласовано регламентов</p>
+                    <p class="size14"><span class="badge badge-primary badge-pill">{{ 0 }}</span> регламентов на согласовании</p>
                 </div>
             </div>
             <div class="col-9">
@@ -54,12 +54,12 @@
                 <a href="{{ url_for('main.regulation_create') }}" class="btn btn-primary text-light mt-2">Создать новый регламент</a>
                 </div>
 
-            <h5 class="sogl mb-3">Мои регламенты</h5>
+        <h5 class="sogl mb-3">Мои регламенты</h5>
                 <div class="jumbotron p-3">
                     <ol>
+                    {% for regulation in users_regulations %}
                     {% for version in regulation.get_versions() %}
                     {% if version.status == 'В работе' %}
-                        {% for regulation in users_regulations %}
                             <li>
                                 {{ regulation.short_name }}
                                 <ul>
@@ -68,8 +68,8 @@
                                         </li>
                                 </ul>
                             </li>
-                        {% endfor %}
                     {% endif %}
+                    {% endfor %}
                     {% endfor %}
                     </ol>
                 </div>
