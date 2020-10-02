@@ -54,6 +54,7 @@ class Regulation(db.Model):
     description = db.Column(db.String(2048))
     creator = db.Column(db.Integer, db.ForeignKey('user.id'))
     created = db.Column(db.DateTime, default=datetime.now())
+    base_document = db.Column(db.String(512))
 
     def get_versions(self):
         return RegulationVersion.query.filter(RegulationVersion.regulation_id==self.id).all()

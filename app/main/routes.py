@@ -38,15 +38,18 @@ def regulation_create():
 @login_required
 def regulation_show(regulation_version_id):
     regulation_version: RegulationVersion = RegulationVersion.query.get(regulation_version_id)
-    # todo научиться подгружать данные с версии
+    data = regulation_version.data
     return render_template('main/regulation_editor.html',
                            title='Редактор регламента',
-                           regulation_version=regulation_version)
+                           regulation_version=regulation_version,
+                           data=data)
 
 
 @bp.route('/save_regulation_<regulation_version_id>', methods=['POST'])
 @login_required
 def regulation_save(regulation_version_id):
     data = json.loads(json.dumps(request.form))
-    print(data)
+    regulation_version: RegulationVersion = RegulationVersion.query.get(regulation_version_id)
+    regulation_version.data = data
+    db.session.commit()
     return redirect(request.referrer)
