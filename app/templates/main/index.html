@@ -15,44 +15,52 @@
 
 {% block content %}
     <div class="container-fluid">
-        <div class="row" style="height: 100vh">
-            <section class="col-sm-2" style="background: antiquewhite">
-                инструментальная область
-                <a href="{{ url_for('main.regulation_create') }}" class="btn btn-primary m-3 text-light">Создать новый регламент</a>
-                <p>Мои регламенты:</p>
-                <ol>
-                    <li>
-                        <a href="#">Выдача субсидий МСП</a>
-                        <ul>
-                            <li><a href="#">Версия 1</a></li>
-                            <li><a href="#">Версия 2</a> <span class="badge badge-success">согл</span></li>
-                            <li><a href="#">Версия 3</a></li>
-                            <li><a href="#">Версия 4</a> <span class="badge badge-primary">в процессе</span></li>
-                        </ul>
-                    </li>
-                    <li>
-                        <a href="#">Выдача субсидий КФХ</a>
-                        <ul>
-                            <li><a href="#">Версия 1</a></li>
-                            <li><a href="#">Версия 2</a></li>
-                            <li><a href="#">Версия 3</a> <span class="badge badge-success">согл</span></li>
-                        </ul>
-                    </li>
-                    <li>
-                        <a href="#">Прививки</a>
-                        <ul>
-                            <li><a href="#">Версия 1</a></li>
-                            <li><a href="#">Версия 2</a></li>
-                            <li><a href="#">Версия 3</a> <span class="badge badge-success">согл</span></li>
-                        </ul>
-                    </li>
-                    <li><a href="#">...</a></li>
+        <div class="row">
+            <div class="col-3">
+                <div class="jumbotron p-5">
+                    <div class="rounded-circle text-center ml-auto mr-auto mb-2" style="background: gray; height: 100px; width: 100px"></div>
+                    <p class="text-center font-weight-bolder">{{ user.username }}</p>
+                    <p>{{ users_regulations|length }} создано регламентов</p>
+                    <p>{{ users_regulations|length }} согласовано регламентов</p>
+                    <p>{{ users_regulations|length }} регламентов на согласовании</p>
+                </div>
+            </div>
+            <div class="col-9">
+                <form class="container-fluid" method="post">
+                    <label>
+                        <input class="form-control" type="text" placeholder="Найти документ">
+                    </label>
+                </form>
 
-                </ol>
-            </section>
-            <section class="col-sm-10" style="background: lightblue">
-                рабочая область
-            </section>
+                <h5 class="mt-3">Мои регламенты</h5>
+                <div class="jumbotron p-3">
+                    <ol>
+                        {% for regulation in users_regulations %}
+                            <li>
+                                {{ regulation.short_name }}
+                                <ul>
+                                    {% for version in regulation.get_versions() %}
+                                        <li>
+                                            <a href="{{ url_for('main.regulation_show', regulation_version_id=version.id) }}">Версия {{ version.version_number }}</a>
+                                            <span class="badge badge-dark">{{ version.status }}</span>
+                                        </li>
+                                    {% endfor %}
+                                </ul>
+                            </li>
+                        {% endfor %}
+                    </ol>
+                </div>
+            </div>
         </div>
+{#        <div class="row" style="height: 100vh">#}
+{#            <section class="col-sm-2" style="background: antiquewhite">#}
+{#                <a href="{{ url_for('main.regulation_create') }}" class="btn btn-primary m-3 text-light">Создать новый регламент</a>#}
+{#                <p>Мои регламенты:</p>#}
+
+{#            </section>#}
+{#            <section class="col-sm-10" style="background: lightblue">#}
+{#                рабочая область#}
+{#            </section>#}
+{#        </div>#}
     </div>
 {% endblock %}

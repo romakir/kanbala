@@ -52,7 +52,12 @@ class Regulation(db.Model):
     id = db.Column(db.Integer, primary_key=True, autoincrement=True)
     short_name = db.Column(db.String(512))
     description = db.Column(db.String(2048))
+    creator = db.Column(db.Integer, db.ForeignKey('user.id'))
     created = db.Column(db.DateTime, default=datetime.now())
+
+    def get_versions(self):
+        return RegulationVersion.query.filter(RegulationVersion.regulation_id==self.id).all()
+
 
 class RegulationVersion(db.Model):
     id = db.Column(db.Integer, primary_key=True, autoincrement=True)

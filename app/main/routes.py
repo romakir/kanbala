@@ -5,18 +5,22 @@ from flask_login import current_user, login_required
 from app.models import Regulation, RegulationVersion
 
 
-
 @bp.route('/', methods=['GET','POST'])
 @login_required
 def index():
     title = 'КАНБАЛА'
-    return render_template('main/index.html', title=title, user=current_user)
+    users_regulations: Regulation = Regulation.query.filter(Regulation.creator==current_user.id).all()
+    return render_template('main/index.html',
+                           title=title,
+                           user=current_user,
+                           users_regulations=users_regulations)
 
 
 @bp.route('/create_regulation', methods=['GET', 'POST'])
 @login_required
 def regulation_create():
     regulation = Regulation()
+    regulation.creator = current_user.id
     db.session.add(regulation)
     db.session.commit()
     regulation.short_name = f'Новый регламент {regulation.id}'
