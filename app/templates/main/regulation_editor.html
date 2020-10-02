@@ -24,14 +24,22 @@
                         <div >
                             <label for='header_name'>Наименование приложения</label>
                             <textarea class='form-control' name='header_name'  id='header_name'>{{ data['header_name'] }}</textarea>
-                            <label for='header_base_doc'>На основании нормативно-правовых актов</label>
-                            <textarea class='form-control' name='header_base_doc'  id='header_base_doc' placeholder="вставьте ссылки на документы через пробел">{{ data['header_base_doc'] }}</textarea>
+                            <label for='header_base_doc'>На основании нормативно-правовых актов (вставьте ссылку, нажмите Enter)</label>
+                            <textarea rows="1" class='form-control' name='header_base_doc'  id='header_base_doc' placeholder="Вставьте ссылку, нажмите Enter">{{ data['header_base_doc'] }}</textarea>
                         </div>
                     </div>
+                    <button class="btn btn-primary mt-3" form="editor" type="submit">Сохранить</button>
+                    <a class="btn btn-secondary mt-3" href="{{ url_for('main.index') }}">Закрыть</a>
                 </div>
                 <div class="p-3 main-text">
                     <p><b>Основной текст</b></p>
-                    <a href="{{ url_for('main.editor_add_chapter', regulation_version_id=regulation_version.id) }}" class="btn btn-success">Добавить раздел</a>
+                    <div class="row p-3">
+                        <a href="{{ url_for('main.editor_add_chapter', regulation_version_id=regulation_version.id) }}" class="btn btn-success col-2">Добавить раздел</a>
+                        <div class="col text-right ml-auto">
+                            <label  for="file">Подгрузить приложение</label>
+                            <input  type="file" id="file">
+                        </div>
+                    </div>
                 </div>
                 <button class="btn btn-primary" form="editor" type="submit">Сохранить</button>
                 <a class="btn btn-secondary" href="{{ url_for('main.index') }}">Закрыть</a>
@@ -43,6 +51,7 @@
 {% block scripts %}
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
     <script>
+        {# загрузка текста #}
         let data = {{ data|safe }};
         let pattern = /chapter_\d/;
         let chapters = [];
@@ -69,6 +78,20 @@
                 let paragraph_header_node = $(`<p class="ml-3 mb-0 mt-3" id=paragraph_name_${Number(paragraph)+1}_${Number(paragraph)+1}>Пункт ${Number(chapter)+1}.${Number(paragraph)+1}</p>`)
                 let paragraph_node = $(`<textarea rows="15" class="form-control ml-3 mr-3" name=paragraph_${Number(chapter)+1}_${Number(paragraph)+1}>${paragraphs[paragraph]['text']}</textarea>`)
                 chapter_wrapper_node.append(paragraph_header_node, paragraph_node)
+            }
+        }
+
+        {#  сохранение ссылок  #}
+        let link_area = $('#header_base_doc')
+        link_area.keypress(addBaseDocumentLink)
+
+        function addBaseDocumentLink(e) {
+            if (e.originalEvent.key==='Enter') {
+                let link_count = document.querySelectorAll('.base-doc-link').length
+                let base_document_link = $(`<a rows="1" name="link_${link_count+1}" id="link_${link_count+1}" class="d-block base-doc-link btn btn-link form-control text-left" href="${link_area.val()}" target="_blank">${link_count+1}. ${link_area.val()}</a>`)
+                let headers = $('#hdrs')
+                headers.append(base_document_link)
+                link_area.val('')
             }
         }
     </script>
