@@ -3,20 +3,14 @@
 {% block content %}
     <div class="container">
         <div class="row">
-            <div class="col">
-                <p class="m-0">Регламент: {{ regulation_version.parent_regulation().short_name }} <a href="#">Переименовать</a></p>
-                <p>Версия {{ regulation_version.version_number }}</p>
-            </div>
-            <div class="col">
-                <p class="m-0">Дата создания {{ regulation_version.created.strftime('%d.%m.%y %H:%M') }}</p>
-                <p>Статус <em>{{ regulation_version.status }}</em></p>
-            </div>
-        </div>
-        <div class="row">
-            <form class="col" method="POST" action='/save_regulation_{{ regulation_version.id }}' id='editor'>
-                <div class="form-group" id='headers'>
-                    <div id='hdrs' class="p-3" style="background: lightgray">
-                        <b>Шапка документа</b>
+            <span>Регламент: {{ regulation_version.parent_regulation().short_name }}</span>
+            <a href="#">Переименовать</a>
+            <p>Версия {{ regulation_version.version_number }}</p>
+            <p>Дата создания {{ regulation_version.created }}</p>
+            <p>Статус <em>{{ regulation_version.status }}</em></p>
+            <form method="POST" action='/save_regulation_{{ regulation_version.id }}' id='editor'>
+                <div class="form-group " id='headers'>
+                    <div id='hdrs'>
                         <div class="">
                             <label for='header_application'>Отметка о приложении</label>
                             <textarea class='form-control' name='header_application' id='header_application'>{{ data['header_application'] }}</textarea>
@@ -24,13 +18,12 @@
                         <div >
                             <label for='header_name'>Наименование приложения</label>
                             <textarea class='form-control' name='header_name'  id='header_name'>{{ data['header_name'] }}</textarea>
-                            <label for='header_base_doc'>На основании нормативно-правовых актов</label>
-                            <textarea class='form-control' name='header_base_doc'  id='header_base_doc' placeholder="вставьте ссылки на документы через пробел">{{ data['header_base_doc'] }}</textarea>
+                            <label for='header_base_doc'>На основании нормативно-правового акта</label>
+                            <input name='header_base_doc'  id='header_base_doc' value="{{ data['header_base_doc'] }}">
                         </div>
                     </div>
                 </div>
                 <div>
-                    <p><b>Основной текст</b></p>
                     <!-- section title -->
                     <div class="d-inline">
                         <label for='sect_1'>1. </label>
