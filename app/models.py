@@ -15,6 +15,8 @@ class User(UserMixin, db.Model):
     id = db.Column(db.Integer, primary_key=True, autoincrement=True)
 
     username = db.Column(db.String(64), index=True)
+    organization = db.Column(db.String(256))
+    position = db.Column(db.String(256))
     email = db.Column(db.String(256))
     password_hash = db.Column(db.String(128))
 
