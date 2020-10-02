@@ -4,6 +4,7 @@ from flask import render_template, redirect, url_for, request
 from flask_login import current_user, login_required
 from app.models import Regulation, RegulationVersion
 import json
+import re
 
 
 @bp.route('/', methods=['GET','POST'])
@@ -51,7 +52,10 @@ def regulation_show(regulation_version_id):
 def regulation_save(regulation_version_id):
     data = json.loads(json.dumps(request.form))
     regulation_version: RegulationVersion = RegulationVersion.query.get(regulation_version_id)
-    regulation_version.data = json.dumps(data)
+    regulation_version_data = json.loads(regulation_version.data)
+    for item in data:
+        regulation_version_data[item] = data[item]
+    regulation_version.data = json.dumps(regulation_version_data)
     regulation_version.parent_regulation().base_document = data['header_base_doc']
     db.session.commit()
     return redirect(request.referrer)
@@ -62,10 +66,25 @@ def regulation_save(regulation_version_id):
 def editor_add_chapter(regulation_version_id):
     regulation_version: RegulationVersion = RegulationVersion.query.get(regulation_version_id)
     regulation_version_data = json.loads(regulation_version.data)
-    if 'main_text' in regulation_version_data:
-        regulation_version_data['main_text'][f'chapter_{len(regulation_version_data["main_text"])+1}'] = ''
-    else:
-        regulation_version_data['main_text'] = {'chapter_1': ''}
+    chapters_count = 0
+    for item in regulation_version_data:
+        if re.match('chapter_\d', item):
+            chapters_count += 1
+    regulation_version_data[f'chapter_{chapters_count+1}'] = ''
+    regulation_version.data = json.dumps(regulation_version_data)
+    db.session.commit()
+    return redirect(request.referrer)
+
+@bp.route('/add_paragraph_<regulation_version_id>_<chapter_number>')
+def add_paragraph(regulation_version_id, chapter_number):
+    regulation_version: RegulationVersion = RegulationVersion.query.get(regulation_version_id)
+    regulation_version_data = json.loads(regulation_version.data)
+
+    paragraph_count = 0
+    for item in regulation_version_data:
+        if re.match(f'paragraph_{chapter_number}_\d', item):
+            paragraph_count += 1
+    regulation_version_data[f'paragraph_{chapter_number}_{paragraph_count+1}'] = ''
     regulation_version.data = json.dumps(regulation_version_data)
     db.session.commit()
     return redirect(request.referrer)
