@@ -48,16 +48,27 @@ class User(UserMixin, db.Model):
         return f'{self.first_name} {self.last_name}'
 
 
+class BaseDoc(db.Model):
+    id = db.Column(db.Integer, primary_key=True, autoincrement=True)
+    link = db.Column(db.String(1024))
+    hash = db.Column(db.String(512))
+    regulation_id = db.Column(db.Integer, db.ForeignKey('regulation.id'))
+
+
 class Regulation(db.Model):
     id = db.Column(db.Integer, primary_key=True, autoincrement=True)
     short_name = db.Column(db.String(512))
     description = db.Column(db.String(2048))
     creator = db.Column(db.Integer, db.ForeignKey('user.id'))
     created = db.Column(db.DateTime, default=datetime.now())
-    base_document = db.Column(db.String(512))
+
 
     def get_versions(self):
         return RegulationVersion.query.filter(RegulationVersion.regulation_id==self.id).all()
+
+
+    def get_base_documents(self):
+        return BaseDoc.query.filter(BaseDoc.regulation_id==self.id).all()
 
 
 class RegulationVersion(db.Model):
