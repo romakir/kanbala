@@ -69,10 +69,6 @@
 {#                        </div>#}
                     </div>
                 </div>
-                <div class="mt-3">
-                    <button class="btn btn-primary" form="editor" type="submit">Сохранить</button>
-                    <a class="btn btn-secondary" href="{{ url_for('main.index') }}">Закрыть</a>
-                </div>
             </form>
 
 {#                    </div>#}
@@ -83,14 +79,20 @@
         </div>
     </div>
 
-    <div class="container">
-        <form class="col text-right ml-auto" onchange="this.submit()" action="/add_regulation_application/{{regulation_version.id}}" method="POST" enctype="multipart/form-data">
-            {% for i in applications %}
-                <a href="{{url_for('static', filename='applications/'+i.filename_orig)}}">{{i.filename_orig}}</a><br>
-            {%endfor%}
-            <label for="appliction_uploader">Подгрузить приложение</label>
-            <input type="file" name='uploaded_application' id="appliction_uploader">
-        </form>
+    <div class="container mt-3">
+        <div class="row">
+            <div class="col">
+                <button class="btn btn-primary" form="editor" type="submit">Сохранить</button>
+                <a class="btn btn-secondary" href="{{ url_for('main.index') }}">Закрыть</a>
+            </div>
+            <form class="col text-right ml-auto p-0" onchange="this.submit()" action="/add_regulation_application/{{regulation_version.id}}" method="POST" enctype="multipart/form-data">
+                <label for="appliction_uploader">Подгрузить приложение</label>
+                <input type="file" name='uploaded_application' id="appliction_uploader">
+                {% for i in applications %}
+                    <a href="{{url_for('static', filename='applications/'+i.filename_orig)}}">{{i.filename_orig}}</a><br>
+                {%endfor%}
+            </form>
+        </div>
     </div>
 
     <div class="container jumbotron pl-4 pt-2 mt-3">
