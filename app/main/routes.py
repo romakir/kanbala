@@ -2,7 +2,8 @@ from app import db
 from app.main import bp
 from flask import render_template, redirect, url_for, request
 from flask_login import current_user, login_required
-from app.models import Regulation, RegulationVersion
+from app.models import Regulation, RegulationVersion, BaseDoc
+from app.main.forms import RenameRegulationForm, AddBaseDocumentLink
 import json
 import re
 
@@ -41,10 +42,29 @@ def regulation_create():
 def regulation_show(regulation_version_id):
     regulation_version: RegulationVersion = RegulationVersion.query.get(regulation_version_id)
     data = json.loads(regulation_version.data)
+    rename_regulation_form = RenameRegulationForm()
+    add_document_link = AddBaseDocumentLink()
+
+    if rename_regulation_form.validate_on_submit():
+        regulation_version.parent_regulation().short_name = rename_regulation_form.name.data
+        db.session.commit()
+        return redirect(request.referrer)
+
+    if add_document_link.validate_on_submit():
+        new_doc = BaseDoc()
+        new_doc.link = add_document_link.link.data
+        new_doc.regulation_id = regulation_version.parent_regulation().id
+        db.session.add(new_doc)
+        db.session.commit()
+        return redirect(request.referrer)
+
     return render_template('main/regulation_editor.html',
                            title='Редактор регламента',
                            regulation_version=regulation_version,
-                           data=data)
+                           data=data,
+                           rename_regulation_form=rename_regulation_form,
+                           add_document_link=add_document_link,
+                           regulation_base_documents=regulation_version.parent_regulation().get_base_documents())
 
 
 @bp.route('/save_regulation_<regulation_version_id>', methods=['POST'])
@@ -57,7 +77,7 @@ def regulation_save(regulation_version_id):
     for item in data:
         regulation_version_data[item] = data[item]
     regulation_version.data = json.dumps(regulation_version_data)
-    regulation_version.parent_regulation().base_document = data['header_base_doc']
+    # regulation_version.parent_regulation().base_document = data['header_base_doc']
     db.session.commit()
     return redirect(request.referrer)
 
