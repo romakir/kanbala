@@ -39,6 +39,25 @@ def regulation_create():
     return redirect(url_for('main.regulation_show', regulation_version_id=regulation_version.id))
 
 
+@bp.route('/reg/<regid>/remove/<section>/<paragraph>', methods=['DELETE'])
+def removeparagraph(regid, section, paragraph=-1):
+    entry = RegulationVersion.query.get(regid)
+    data = json.loads(entry.data)
+    data.pop(f"paragraph_{section}_{paragraph}")
+    counter = 1
+    l = sorted([x for x in data.keys() if x.startswith(f'paragraph_{section}_')])
+    print(l)
+    for i in l:
+        if i.split("_")[-1] != str(counter):
+            data[f"paragraph_{section}_{counter}"] = data[i]
+            del data[i]
+        counter += 1
+    entry.data = json.dumps(data)
+    db.session.merge(entry)
+    db.session.commit()
+    return Response("200")
+
+
 @bp.route('/show_regulation_<regulation_version_id>', methods=['GET', 'POST'])
 @login_required
 def regulation_show(regulation_version_id):
@@ -146,7 +165,7 @@ def save_comment(user_id, regulation_version_id):
     data = json.loads(json.dumps(request.form))
     for item in data:
         if re.match('comment', item):
-            paragraph = item.split('_')[-1]
+            paragraph = item.split('_')[-2]+'_'+item.split('_')[-1]
             comment = Comment()
             comment.user_id = user_id
             comment.regulation_version_id = regulation_version_id
