@@ -49,6 +49,8 @@
                                             <a href="{{ url_for('main.regulation_show', regulation_version_id=version.id) }}">Версия {{ version.version_number }}</a>
                                             {% if version.status == 'Черновик' %}
                                                 <span class="badge badge-dark">{{ version.status }}</span>
+                                            {% elif version.status == 'Согласован' %}
+                                                <span class="badge badge-success">{{ version.status }}</span>
                                             {% else %}
                                                 <span class="badge badge-primary">{{ version.status }}</span>
                                             {% endif %}
