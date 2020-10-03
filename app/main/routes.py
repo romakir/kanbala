@@ -165,7 +165,7 @@ def save_comment(user_id, regulation_version_id):
     data = json.loads(json.dumps(request.form))
     for item in data:
         if re.match('comment', item):
-            paragraph = item.split('_')[-1]
+            paragraph = item.split('_')[-2]+'_'+item.split('_')[-1]
             comment = Comment()
             comment.user_id = user_id
             comment.regulation_version_id = regulation_version_id

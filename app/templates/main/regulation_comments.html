@@ -46,7 +46,6 @@
             </form>
         </div>
     </div>
-
 {% endblock %}
 
 {% block scripts %}
@@ -95,13 +94,24 @@
             for (let paragraph in paragraphs) {
                 let paragraph_header_node = $(`<p class="ml-3 mb-0 mt-3" id=paragraph_name_${Number(paragraph)+1}_${Number(paragraph)+1}>Пункт ${Number(chapter)+1}.${Number(paragraph)+1}</p>`)
                 let paragraph_node = $(`<textarea readonly style="background: white;" rows="15"  class="form-control ml-3 mr-3" name=paragraph_${Number(chapter)+1}_${Number(paragraph)+1}>${paragraphs[paragraph]['text']}</textarea>`)
-                let comment_node = $(`<textarea rows="4" class="form-control ml-3 mr-3" name="comment_${Number(chapter)+1}.${Number(paragraph)+1}" placeholder="Комментировать пункт ${Number(chapter)+1}.${Number(paragraph)+1}"></textarea>`)
+                let comment_node = $(`<textarea rows="4" class="form-control ml-3 mr-3" id="comment_${Number(chapter)+1}_${Number(paragraph)+1}" name="comment_${Number(chapter)+1}_${Number(paragraph)+1}" placeholder="Комментировать пункт ${Number(chapter)+1}.${Number(paragraph)+1}"></textarea>`)
                 card_body_node.append(paragraph_header_node, paragraph_node, comment_node)
             }
-            let comments = {{ comments|safe }};
-            for (let comment of comments) {
-                console.log(comment)
-            }
+        }
+        let comments = {
+            {% for comment in comments %}
+                '{{ comment.paragraph }}': {
+                    'text': '{{ comment.text }}',
+                    'user_id': '{{ comment.user_id }}',
+                    'created': '{{ comment.created }}',
+                    'username': '{{ comment.get_commentator().username }}',
+                    'organization': '{{ comment.get_commentator().organization }}'
+
+                }
+            {% endfor %}
+        };
+        for (let comment in comments) {
+            $('#comment_'+comment).val(`${comments[comment]['username']} (${comments[comment]['organization']}): ${comments[comment]['text']}\n`)
         }
     </script>
 {% endblock %}
