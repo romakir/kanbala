@@ -91,3 +91,12 @@ class UserRegulation(db.Model):
     comments_data = db.Column(db.JSON)
 
 
+class RegulationApplication(db.Model):
+    id = db.Column(db.Integer, primary_key=True, autoincrement=True)
+    regulation_id = db.Column(db.Integer, db.ForeignKey('regulation.id'))
+    filename = db.Column(db.String(64))
+    filename_orig = db.Column(db.String(128))
+
+    @staticmethod
+    def get_applications_by_doc(id):
+        return RegulationApplication.query.filter_by(regulation_id=id).all()
