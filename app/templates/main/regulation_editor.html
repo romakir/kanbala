@@ -147,7 +147,7 @@
 
 
             for (let paragraph in paragraphs) {
-                let paragraph_header_node = $(`<p class="ml-3 mb-0 mt-3" id=paragraph_name_${Number(paragraph)+1}_${Number(paragraph)+1}>Пункт ${Number(chapter)+1}.${Number(paragraph)+1}</p>`)
+                let paragraph_header_node = $(`<p class="ml-3 mb-0 mt-3" id=paragraph_name_${Number(paragraph)+1}_${Number(paragraph)+1}>Пункт ${Number(chapter)+1}.${Number(paragraph)+1} <button type='button' class='btn btn-danger' onclick='remove_sect(${Number(chapter)+1},${Number(paragraph)+1})'>Удалить</button></p>`)
                 let paragraph_node = $(`<div class='input-group'>
                 <textarea rows="15" class="input-group form-control ml-3 mr-3" onkeydown='return keeplist(event, this)' name=paragraph_${Number(chapter)+1}_${Number(paragraph)+1}>${paragraphs[paragraph]['text']}</textarea>
                 <div class='input-group'>
@@ -180,6 +180,17 @@
                     elem.value += `\n${par}.1 `
                 }
             }
+        }
+
+        function remove_sect(section, paragraph) { 
+            xhr = new XMLHttpRequest();
+            if (paragraph == -1){
+                xhr.open('DELETE', `/reg/{{regulation_version.id}}/remove/${section}`)
+            } else {
+                xhr.open('DELETE', `/reg/{{regulation_version.id}}/remove/${section}/${paragraph}`)
+            }
+            xhr.onload = function () {window.location = window.location}
+            xhr.send()
         }
 
         function keeplist(evt, elem) {
