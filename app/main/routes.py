@@ -7,6 +7,7 @@ from app.main.forms import RenameRegulationForm, AddBaseDocumentLink
 from hashlib import md5
 import json, secrets
 import re
+import os
 
 
 @bp.route('/', methods=['GET','POST'])
@@ -74,6 +75,8 @@ def regulation_show(regulation_version_id):
 def add_application(id):
     doc = request.files['uploaded_application']
     filename = secrets.token_hex(8)+doc.filename
+    if not os.path.exists('app/static/applications/'):
+        os.makedirs('app/static/applications/')
     doc.save('app/static/applications/'+filename)
     entry = RegulationApplication(regulation_id=id, filename=filename, filename_orig=doc.filename)
     db.session.add(entry)
