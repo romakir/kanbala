@@ -2,7 +2,7 @@ from app import db
 from app.main import bp
 from flask import render_template, redirect, url_for, request
 from flask_login import current_user, login_required
-from app.models import Regulation, RegulationVersion, BaseDoc, RegulationApplication
+from app.models import Regulation, RegulationVersion, BaseDoc, RegulationApplication, Comment
 from app.main.forms import RenameRegulationForm, AddBaseDocumentLink
 from hashlib import md5
 import json, secrets
@@ -88,19 +88,19 @@ def add_application(id):
 def show_regulation_comment_mode(regulation_version_id):
     regulation_version: RegulationVersion = RegulationVersion.query.get(regulation_version_id)
     data = json.loads(regulation_version.data)
-
+    comments = regulation_version.get_comments()
     return render_template('main/regulation_comments.html',
                            title='Редактор регламента',
                            regulation_version=regulation_version,
                            data=data,
-                           regulation_base_documents=regulation_version.parent_regulation().get_base_documents())
-
+                           regulation_base_documents=regulation_version.parent_regulation().get_base_documents(),
+                           current_user=current_user,
+                           comments=comments)
 
 @bp.route('/save_regulation_<regulation_version_id>', methods=['POST'])
 @login_required
 def regulation_save(regulation_version_id):
     data = json.loads(json.dumps(request.form))
-    print(data)
     regulation_version: RegulationVersion = RegulationVersion.query.get(regulation_version_id)
     regulation_version_data = json.loads(regulation_version.data)
     for item in data:
@@ -125,6 +125,7 @@ def editor_add_chapter(regulation_version_id):
     db.session.commit()
     return redirect(request.referrer)
 
+
 @bp.route('/add_paragraph_<regulation_version_id>_<chapter_number>')
 def add_paragraph(regulation_version_id, chapter_number):
     regulation_version: RegulationVersion = RegulationVersion.query.get(regulation_version_id)
@@ -137,4 +138,20 @@ def add_paragraph(regulation_version_id, chapter_number):
     regulation_version_data[f'paragraph_{chapter_number}_{paragraph_count+1}'] = ''
     regulation_version.data = json.dumps(regulation_version_data)
     db.session.commit()
+    return redirect(request.referrer)
+
+
+@bp.route('/save_comment_<user_id>_<regulation_version_id>', methods=['POST'])
+def save_comment(user_id, regulation_version_id):
+    data = json.loads(json.dumps(request.form))
+    for item in data:
+        if re.match('comment', item):
+            paragraph = item.split('_')[-1]
+            comment = Comment()
+            comment.user_id = user_id
+            comment.regulation_version_id = regulation_version_id
+            comment.paragraph = paragraph
+            comment.text = data[item]
+            db.session.add(comment)
+            db.session.commit()
     return redirect(request.referrer)

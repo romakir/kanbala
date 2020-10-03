@@ -5,20 +5,8 @@
         <div class="row">
             <div class="col">
                 <p class="m-0">Регламент: {{ regulation_version.parent_regulation().short_name }}
-{#                    <a class="btn btn-link" data-toggle="collapse" href="#collapseRenameRegulation" role="button" aria-expanded="false" aria-controls="collapseRenameRegulation">#}
-{#                        Переименовать#}
-{#                    </a>#}
                 </p>
                 <div class="collapse" id="collapseRenameRegulation">
-{#                    <div class="card card-body">#}
-{#                        <p class="">Переименовать</p>#}
-{#                        <form class="form-inline p-0" action="" method="post">#}
-{#                            {{ rename_regulation_form.hidden_tag() }}#}
-{##}
-{#                            {{ rename_regulation_form.name() }}#}
-{#                            {{ rename_regulation_form.rename() }}#}
-{#                        </form>#}
-{#                    </div>#}
                 </div>
                 <p>Версия {{ regulation_version.version_number }}</p>
             </div>
@@ -27,15 +15,8 @@
                 <p>Статус <em>{{ regulation_version.status }}</em></p>
             </div>
         </div>
-{#            <form class="form-inline text-right m-3" action="" method="post">#}
-{#                {{ add_document_link.hidden_tag() }}#}
-{##}
-{#                {{ add_document_link.link.label(class='mr-3') }}#}
-{#                {{ add_document_link.link() }}#}
-{#                {{ add_document_link.add() }}#}
-{#            </form>#}
         <div class="row">
-            <form class="col" method="POST" action='/save_regulation_{{ regulation_version.id }}' id='editor'>
+            <form class="col" method="POST" onchange="this.submit()" action='{{ url_for('main.save_comment', user_id=current_user.id, regulation_version_id=regulation_version.id) }}' id='commentator'>
                 <div class="form-group" id='headers'>
                     <div id='hdrs' class="p-3" style="background: lightgray">
                         <b>Шапка документа</b>
@@ -52,8 +33,6 @@
                                     <li><a href="{{ doc.link }}" target="_blank">{{ doc.link }}</a></li>
                                 {% endfor %}
                             </ol>
-{#                            <label for='header_base_doc'>На основании нормативно-правовых актов (вставьте ссылку, нажмите Enter)</label>#}
-{#                            <textarea rows="1" class='form-control' name='header_base_doc'  id='header_base_doc' placeholder="Вставьте ссылку, нажмите Enter">{{ data['header_base_doc'] }}</textarea>#}
                         </div>
                     </div>
                     <button class="btn btn-primary mt-3" form="editor" type="submit">Сохранить</button>
@@ -61,13 +40,6 @@
                 </div>
                 <div class="p-3 main-text">
                     <p><b>Основной текст</b></p>
-                    <div class="row p-3">
-{#                        <a href="{{ url_for('main.editor_add_chapter', regulation_version_id=regulation_version.id) }}" class="btn btn-success col-2">Добавить раздел</a>#}
-{#                        <div class="col text-right ml-auto">#}
-{#                            <label  for="file">Подгрузить приложение</label>#}
-{#                            <input  type="file" id="file">#}
-{#                        </div>#}
-                    </div>
                 </div>
                 <button class="btn btn-primary" form="editor" type="submit">Сохранить</button>
                 <a class="btn btn-secondary" href="{{ url_for('main.index') }}">Закрыть</a>
@@ -109,7 +81,6 @@
 
             let chapter_header_node = $(`<p class="mb-0 mt-2">Раздел ${index}</p>`)
             let chapter_node = $(`<textarea readonly style="background: white" class="form-control text-left" id=chapter_name_${index} name="chapter_${index}" placeholder="Заголовок раздела">${chapters[chapter]['text']}</textarea>`)
-            {#let add_paragraph_button = $(`<a class="btn btn-secondary ml-3" href="{{ url_for('main.add_paragraph', regulation_version_id=regulation_version.id, chapter_number='') }}${index}">Добавить пункт</a>`)#}
 
             let paragraph_pattern = new RegExp('paragraph_'+(Number(chapter)+1).toString()+'_\\d')
             let paragraphs = [];
@@ -124,30 +95,13 @@
             for (let paragraph in paragraphs) {
                 let paragraph_header_node = $(`<p class="ml-3 mb-0 mt-3" id=paragraph_name_${Number(paragraph)+1}_${Number(paragraph)+1}>Пункт ${Number(chapter)+1}.${Number(paragraph)+1}</p>`)
                 let paragraph_node = $(`<textarea readonly style="background: white;" rows="15"  class="form-control ml-3 mr-3" name=paragraph_${Number(chapter)+1}_${Number(paragraph)+1}>${paragraphs[paragraph]['text']}</textarea>`)
-                let comment_node = $(`<textarea rows="4" class="form-control ml-3 mr-3" placeholder="Комментировать пункт ${Number(chapter)+1}.${Number(paragraph)+1}"></textarea>`)
+                let comment_node = $(`<textarea rows="4" class="form-control ml-3 mr-3" name="comment_${Number(chapter)+1}.${Number(paragraph)+1}" placeholder="Комментировать пункт ${Number(chapter)+1}.${Number(paragraph)+1}"></textarea>`)
                 card_body_node.append(paragraph_header_node, paragraph_node, comment_node)
             }
+            let comments = {{ comments|safe }};
+            for (let comment of comments) {
+                console.log(comment)
+            }
         }
-
-        {#  сохранение ссылок  #}
-        let link_area = $('#header_base_doc')
-        link_area.keypress(addBaseDocumentLink)
-
-        function addBaseDocumentLink(e) {
-            if (e.originalEvent.key==='Enter') {
-                {#let link_count = document.querySelectorAll('.base-doc-link').length#}
-                {#let base_document_link = $(`<a rows="1" name="link_${link_count+1}" id="link_${link_count+1}" class="d-block base-doc-link btn btn-link form-control text-left" href="${link_area.val()}" target="_blank">${link_count+1}. ${link_area.val()}</a>`)#}
-                {#let headers = $('#hdrs')#}
-                {#headers.append(base_document_link)#}
-                {#link_area.val('')#}
-                {#let url = "{{ url_for('main.index', _external=True) }}"#}
-                {##}
-                {#data = {#}
-                {#    request: 'chat'#}
-                {#params = {#}
-                {#    method: 'POST',#}
-                {#    body: JSON.stringify(data)#}
-                };
-            };
     </script>
 {% endblock %}
