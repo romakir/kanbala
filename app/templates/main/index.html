@@ -17,13 +17,16 @@
         <div class="row">
             <div class="col-3">
                 <div class="jumbotron p-5">
-                    <div class="rounded-circle text-center ml-auto mr-auto mb-2" style="background: gray; height: 100px; width: 100px"></div>
+                    <div class="rounded-circle text-center ml-auto mr-auto mb-2" style="background: url({{ url_for('static', filename='images/user.png') }}); height: 100px; width: 100px; background-size: contain;"></div>
                     <p class="text-center font-weight-bolder m-0 size24" >{{ user.username }}</p>
                     <p class="m-0 text-center font-weight-light"><em>{{ user.organization }}</em></p>
                     <p class="mb-3 text-center font-weight-light"><em>{{ user.position }}</em></p>
                     <p class="size14"><span class="badge badge-primary badge-pill">{{ users_regulations|length }}</span> создано регламентов</p>
                     <p class="size14"><span class="badge badge-primary badge-pill">{{ 0 }}</span> согласовано регламентов</p>
                     <p class="size14"><span class="badge badge-primary badge-pill">{{ 0 }}</span> регламентов на согласовании</p>
+                    <div style="background: url({{ url_for('static', filename='images/diagr.jpg') }}); width: 300px; height: 300px; background-size: contain; background-repeat: no-repeat"></div>
+                    <div style="background: url({{ url_for('static', filename='images/diagr_2.jpg') }}); width: 300px; height: 300px; background-size: contain; background-repeat: no-repeat"></div>
+
                 </div>
             </div>
             <div class="col-9">
@@ -44,7 +47,11 @@
                                     {% for version in regulation.get_versions() %}
                                         <li>
                                             <a href="{{ url_for('main.regulation_show', regulation_version_id=version.id) }}">Версия {{ version.version_number }}</a>
-                                            <span class="badge badge-dark">{{ version.status }}</span>
+                                            {% if version.status == 'Черновик' %}
+                                                <span class="badge badge-dark">{{ version.status }}</span>
+                                            {% else %}
+                                                <span class="badge badge-primary">{{ version.status }}</span>
+                                            {% endif %}
                                             <a href="{{ url_for('main.show_regulation_comment_mode', regulation_version_id=version.id) }}">В режиме комментирования</a>
                                         </li>
                                     {% endfor %}
