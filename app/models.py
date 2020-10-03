@@ -11,6 +11,21 @@ def load_user(id):
     return User.query.get(int(id))
 
 
+class Comment(db.Model):
+    id = db.Column(db.Integer, primary_key=True, autoincrement=True)
+    user_id = db.Column(db.Integer, db.ForeignKey('user.id'))
+    regulation_version_id = db.Column(db.Integer, db.ForeignKey('regulation_version.id'))
+    paragraph = db.Column(db.String(50))
+    created = db.Column(db.DateTime, default=datetime.now())
+    text = db.Column(db.String(2048))
+
+    def get_commentator(self):
+        return User.query.get(self.user_id)
+
+    def get_regulation_version(self):
+        return RegulationVersion.query.get(self.regulation_version_id)
+
+
 class User(UserMixin, db.Model):
     id = db.Column(db.Integer, primary_key=True, autoincrement=True)
 
@@ -81,6 +96,9 @@ class RegulationVersion(db.Model):
 
     def parent_regulation(self):
         return Regulation.query.get(self.regulation_id)
+
+    def get_comments(self):
+        return Comment.query.filter(Comment.regulation_version_id==self.id).all()
 
 
 class UserRegulation(db.Model):
