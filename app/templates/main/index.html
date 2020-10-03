@@ -41,6 +41,7 @@
                                         <li>
                                             <a href="{{ url_for('main.regulation_show', regulation_version_id=version.id) }}">Версия {{ version.version_number }}</a>
                                             <span class="badge badge-dark">{{ version.status }}</span>
+                                            <a href="{{ url_for('main.show_regulation_comment_mode', regulation_version_id=version.id) }}">В режиме комментирования</a>
                                         </li>
                                     {% endfor %}
                                 </ul>
