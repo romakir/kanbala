@@ -4,3 +4,5 @@ migrations
 .env
 app/static/applications/*
 .vscode/settings.json
+lib
+.gitignore

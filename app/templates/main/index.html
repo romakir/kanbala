@@ -5,7 +5,7 @@
         <nav class="navbar navbar-light bg-d mb-3">
             <a class="navbar-brand" href="#">Канбала</a>
             <div class="text-right p-3">
-                <a href="#" class="mr-3 menu--text">Мой профиль</a>
+                <a href="#" class="mr-3 menu--text proffile">Мой профиль</a>
                 <a class="menu--text" href="{{ url_for('auth.logout') }}">Выйти</a>
             </div>
         </nav>
@@ -77,4 +77,36 @@
             </div>
         </div>
     </div>
+
+
+{#<div class="hint">#}
+{#	<a class="hint-triger" href="#">Нажми меня</a>#}
+{#	<div class="hint-popup">#}
+{#		<a class="hint-close" href="#" title="Закрыть"></a>#}
+{#		<h3>Lorem Ipsum</h3>#}
+{#		<p>#}
+{#			Lorem ipsum dolor sit amet, consectetur adipiscing elit.<br>#}
+{#			Curabitur volutpat euismod ipsum. Sed aliquam sit amet<br>#}
+{#			est mattis mattis. Etiam vitae magna vitae dolor tempor porta.#}
+{#		</p>#}
+{#	</div>#}
+{#</div>#}
+
+{% endblock %}
+
+{% block scripts %}
+<script>
+$(function(){
+	$(".proffile").hover(function(){
+		$(this).next().show(0).after('<div class="hint-fade">');
+		return false;
+	});
+
+	$(".hint-close").click(function(){
+		$(".hint-popup").hide(0);
+		$(".hint-fade").remove();
+		return false;
+	});
+});
+</script>
 {% endblock %}
