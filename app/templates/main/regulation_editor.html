@@ -64,6 +64,7 @@
                     <p><b>Основной текст</b></p>
                     <div class="row p-3">
                         <a href="{{ url_for('main.editor_add_chapter', regulation_version_id=regulation_version.id) }}" class="btn btn-success col-2">Добавить раздел</a>
+
                         <button type="button" onclick="hide_all()" class="btn btn-primary ml-3">Свернуть всё</button>
                         <div class="col text-right ml-auto">
                             <label  for="file">Подгрузить приложение</label>
@@ -76,6 +77,19 @@
                     <a class="btn btn-secondary" href="{{ url_for('main.index') }}">Закрыть</a>
                 </div>
             </form>
+
+                    </div>
+                    <button class="btn btn-primary" form="editor" type="submit">Сохранить</button>
+                    <a class="btn btn-secondary" href="{{ url_for('main.index') }}">Закрыть</a>
+                </form>
+                <form class="col text-right ml-auto" onchange="this.submit()" action="/add_regulation_application/{{regulation_version.id}}" method="POST" enctype="multipart/form-data">
+                    {% for i in applications %}
+                        <a href="{{url_for('static', filename='applications/'+i.filename_orig)}}">{{i.filename_orig}}</a><br>
+                    {%endfor%}
+                    <label for="appliction_uploader">Подгрузить приложение</label>
+                    <input type="file" name='uploaded_application' id="appliction_uploader">
+                </form>
+            </div>
         </div>
     </div>
 
@@ -107,6 +121,7 @@
         let data = {{ data|safe }};
         let pattern = /chapter_\d/;
         let chapters = [];
+        let style_tooltip = $(``)
         for (let item in data) if (item.match(pattern)) chapters.push({'text': data[item]})
         let index = 0;
         for (let chapter in chapters) {
