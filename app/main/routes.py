@@ -51,6 +51,7 @@ def regulation_show(regulation_version_id):
 @login_required
 def regulation_save(regulation_version_id):
     data = json.loads(json.dumps(request.form))
+    print(data)
     regulation_version: RegulationVersion = RegulationVersion.query.get(regulation_version_id)
     regulation_version_data = json.loads(regulation_version.data)
     for item in data:
