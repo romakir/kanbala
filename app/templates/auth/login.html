@@ -1,31 +1,32 @@
 {% extends 'base.html' %}
 {% block content %}
 
-        <nav class="navbar navbar-light bg-d mb-3">
-            <a class="navbar-brand" href="#">Канбала</a>
-            <div class="text-right mr-10">
-                   <form class="container-fluid mt-auto mb-auto " method="post">
-                    <div class="row">
-                    <input class="form-control col" type="text" placeholder="Найти документ">
-                    <button type="submit" class="btn btn-primary col-4 ml-2">Найти</button>
-                    </div>
-                </form>
-            </div>
-        </nav>
+<nav class="navbar navbar-light bg-light">
+<div class="container">
+{#    <div class="row">#}
+          <a class="navbar-brand row">КАНБАЛА</a>
+            <form class="form-inline mr-4">
+              <input class="form-control mr-sm-2" type="search" placeholder="Search" aria-label="Search">
+              <button class="btn btn-outline-success my-2 my-sm-0" type="submit">Search</button>
+            </form>
+{#    </div>#}
+</div>
+</nav>
+
 <div class="container ">
     <div class="row">
         <div class="jumbotron col-7 mr-5 ">
   <p class="lead">Недавно добавленые регламенты</p>
   <hr class="my-4">
    <ol>
+   Hello
        {% for regulation in regulations %}
            <li>
+           World
                {{ regulation.short_name }}
            </li>
        {% endfor %}
    </ol>
-  <a class="btn btn-primary btn-lg" href="#" role="button">Learn more</a>
-
     </div>
     <form class=" jumbotron col-4 form-signin grey-box" action="" method="post">
 
@@ -55,10 +56,8 @@
         {{ form.remember_me() }} {{ form.remember_me.label }} <br>
 
         <div class="justify-content-center">
-            {{ form.submit(class="btn btn-primary") }}
-            <a class="btn btn-primary" href="{{ url_for('auth.register') }}">
-                ЗАРЕГИСТРИРОВАТЬСЯ
-            </a>
+            {{ form.submit(class="btn btn-primary mt-1") }}
+            <img class="imahe mt-1 ml-3" src="{{ url_for('static', filename='img/gos.svg') }}" />
             <p class="mt-3">
                 <a href="{{ url_for('auth.reset_password_request') }}">Забыли пароль?</a>
             </p>

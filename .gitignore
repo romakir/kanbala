@@ -4,7 +4,3 @@ migrations
 .env
 app/static/applications/*
 .vscode/settings.json
-.idea/
-app/.idea/
-app/.stversions/
-venv/
