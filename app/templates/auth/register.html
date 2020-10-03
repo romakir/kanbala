@@ -16,6 +16,18 @@
             <span style="color: red;">[{{ error }}]</span>
         {% endfor %}
 
+        {{ form.organization.label() }}<br>
+        {{ form.organization(size=64, class='col-sm-12', type='email', placeholder='Внимательно') }}<br>
+        {% for error in form.organization.errors %}
+            <span style="color: red;">[{{ error }}]</span>
+        {% endfor %}
+
+        {{ form.position.label() }}<br>
+        {{ form.position(size=64, class='col-sm-12', type='email', placeholder='Внимательно') }}<br>
+        {% for error in form.position.errors %}
+            <span style="color: red;">[{{ error }}]</span>
+        {% endfor %}
+
         {{ form.password.label() }}<br>
         {{ form.password(size=32, class='col-sm-12', type='password') }}<br>
         {% for error in form.password.errors %}
