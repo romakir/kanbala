@@ -67,6 +67,18 @@ def regulation_show(regulation_version_id):
                            regulation_base_documents=regulation_version.parent_regulation().get_base_documents())
 
 
+@bp.route('/show_regulation_comment_mode_<regulation_version_id>', methods=['GET', 'POST'])
+def show_regulation_comment_mode(regulation_version_id):
+    regulation_version: RegulationVersion = RegulationVersion.query.get(regulation_version_id)
+    data = json.loads(regulation_version.data)
+
+    return render_template('main/regulation_comments.html',
+                           title='Редактор регламента',
+                           regulation_version=regulation_version,
+                           data=data,
+                           regulation_base_documents=regulation_version.parent_regulation().get_base_documents())
+
+
 @bp.route('/save_regulation_<regulation_version_id>', methods=['POST'])
 @login_required
 def regulation_save(regulation_version_id):
