@@ -57,6 +57,8 @@
 
         <div class="justify-content-center">
             {{ form.submit(class="btn btn-primary mt-1") }}
+            <br>
+            <span>войти через госуслуги</span>
             <img class="imahe mt-1 ml-3" src="{{ url_for('static', filename='img/gos.svg') }}" />
             <p class="mt-3">
                 <a href="{{ url_for('auth.reset_password_request') }}">Забыли пароль?</a>
