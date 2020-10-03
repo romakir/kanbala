@@ -92,7 +92,7 @@
             xhr.open("POST", $('#editor')[0].action, true)
             xhr.onload = function () {
                 $('#save_notice').removeAttr('hidden')
-                setTimeout(function () {$('#save_notice')[0].setAttribute('hidden', 'true')}, 2000)
+                setTimeout(function () {$('#save_notice')[0].setAttribute('hidden', 'true')}, 500)
             }
             xhr.send(new FormData(document.getElementById('editor')))
         }
@@ -136,7 +136,13 @@
 
             for (let paragraph in paragraphs) {
                 let paragraph_header_node = $(`<p class="ml-3 mb-0 mt-3" id=paragraph_name_${Number(paragraph)+1}_${Number(paragraph)+1}>Пункт ${Number(chapter)+1}.${Number(paragraph)+1}</p>`)
-                let paragraph_node = $(`<textarea  rows="15" class="form-control ml-3 mr-3" name=paragraph_${Number(chapter)+1}_${Number(paragraph)+1}>${paragraphs[paragraph]['text']}</textarea>`)
+                let paragraph_node = $(`<div class='input-group'>
+                <textarea rows="15" class="input-group form-control ml-3 mr-3" onkeydown='return keeplist(event, this)' name=paragraph_${Number(chapter)+1}_${Number(paragraph)+1}>${paragraphs[paragraph]['text']}</textarea>
+                <div class='input-group'>
+                    <button class='btn input-group-text' onclick='event.preventDefault(); mklist(document.getElementsByName("paragraph_${Number(chapter)+1}_${Number(paragraph)+1}")[0], "unordered")' type='button'><img style='height: 20px' src='https://simpleicons.org/icons/serverless.svg'></button><br>
+                    <button class='btn input-group-text' onclick='event.preventDefault(); mklist(document.getElementsByName("paragraph_${Number(chapter)+1}_${Number(paragraph)+1}")[0], "ordered", "${Number(paragraph)+1}.${Number(chapter)+1}")' type='button'><img style='height: 20px' src='https://simpleicons.org/icons/squareenix.svg'></button>
+                </div>
+            </div>`)
                 card_body_node.append(paragraph_header_node, paragraph_node)
             }
         }
@@ -144,6 +150,41 @@
         {#  сохранение ссылок  #}
         let link_area = $('#header_base_doc')
         link_area.keypress(addBaseDocumentLink)
+
+        function mklist(elem, type, par = 0) {
+            data = elem.value.split("\n")
+            if (type == 'unordered') {
+                if (data[data.length-1].startsWith('-')){
+                    elem.value += "\n-"+data[data.length-1].split(' ')[0]+" "
+                } else {
+                    elem.value += "\n- "
+                }
+            } else if (type == 'ordered') {
+                re = RegExp("[0-9]+\.[0-9]+\.[0-9]+ .*")
+                if (re.test(data[data.length-1])){
+                    n = data[data.length-1].split(' ')[0].split('.')
+                    elem.value += `\n${n[0]}.${n[1]}.${parseInt(n[2])+1} `
+                } else {
+                    elem.value += `\n${par}.1 `
+                }
+            }
+        }
+
+        function keeplist(evt, elem) {
+            if (evt.key === "Enter"){
+            re = RegExp("[0-9]+\.[0-9]+\.[0-9]+ .*")
+            data = elem.value.split("\n")
+            if (data[data.length-1].startsWith('-')) {
+                elem.value += '\n' + data[data.length-1].split(' ')[0] + " "
+            } else if (re.test(data[data.length-1])) {
+                n = data[data.length-1].split('.')
+                elem.value += `\n${n[0]}.${n[1]}.${parseInt(n[2])+1} `
+            } else {
+               return `\n`
+            }
+            return false
+        } 
+        }
 
         function addBaseDocumentLink(e) {
             if (e.originalEvent.key==='Enter') {
