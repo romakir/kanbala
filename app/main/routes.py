@@ -2,9 +2,10 @@ from app import db
 from app.main import bp
 from flask import render_template, redirect, url_for, request
 from flask_login import current_user, login_required
-from app.models import Regulation, RegulationVersion, BaseDoc
+from app.models import Regulation, RegulationVersion, BaseDoc, RegulationApplication
 from app.main.forms import RenameRegulationForm, AddBaseDocumentLink
-import json
+from hashlib import md5
+import json, secrets
 import re
 
 
@@ -61,11 +62,24 @@ def regulation_show(regulation_version_id):
     return render_template('main/regulation_editor.html',
                            title='Редактор регламента',
                            regulation_version=regulation_version,
-                           data=data,
+                           data=data, 
+                           applications=RegulationApplication.get_applications_by_doc(regulation_version.parent_regulation().id),
                            rename_regulation_form=rename_regulation_form,
                            add_document_link=add_document_link,
                            regulation_base_documents=regulation_version.parent_regulation().get_base_documents())
 
+
+@bp.route('/add_regulation_application/<id>', methods=['POST'])
+@login_required
+def add_application(id):
+    doc = request.files['uploaded_application']
+    filename = secrets.token_hex(8)+doc.filename
+    doc.save('app/static/applications/'+filename)
+    entry = RegulationApplication(regulation_id=id, filename=filename, filename_orig=doc.filename)
+    db.session.add(entry)
+    db.session.commit()
+    return redirect(request.referrer)
+    # db.
 
 @bp.route('/show_regulation_comment_mode_<regulation_version_id>', methods=['GET', 'POST'])
 def show_regulation_comment_mode(regulation_version_id):
